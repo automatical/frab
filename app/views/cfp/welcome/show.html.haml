@@ -20,8 +20,8 @@
 
   .row
     .span16
-      .label.notice
-        - if @conference.in_the_past?
-          =t("cfp.conference_in_the_past")
-        - else
-          = raw GitHub::Markdown.render(t('cfp.deadline_description', {date: l(@conference.call_for_participation.end_date)}))
+      - if @conference.in_the_past
+        =t("cfp.conference_in_the_past")
+      - else
+        =t("cfp.deadline_description")
+        %b= l(@conference.call_for_participation.end_date)

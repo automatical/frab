@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180219153146) do
+ActiveRecord::Schema.define(version: 20180104204753) do
 
   create_table "availabilities", force: :cascade do |t|
     t.integer "person_id"
@@ -96,9 +96,6 @@ ActiveRecord::Schema.define(version: 20180219153146) do
     t.string "logo_content_type"
     t.integer "logo_file_size"
     t.datetime "logo_updated_at"
-    t.boolean "schedule_open", default: false, null: false
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.index ["acronym"], name: "index_conferences_on_acronym"
     t.index ["parent_id"], name: "index_conferences_on_parent_id"
   end
@@ -210,12 +207,16 @@ ActiveRecord::Schema.define(version: 20180219153146) do
     t.string "guid", limit: 255
     t.boolean "do_not_record", default: false
     t.string "recording_license", limit: 255
+    t.integer "number_of_repeats", default: 1
+    t.text "other_locations"
+    t.text "methods"
+    t.text "target_audience_experience"
+    t.text "target_audience_experience_text"
     t.text "tech_rider"
-    t.string "invite_token"
+    t.boolean "feedback_wanted"
     t.index ["conference_id"], name: "index_events_on_conference_id"
     t.index ["event_type"], name: "index_events_on_type"
     t.index ["guid"], name: "index_events_on_guid", unique: true
-    t.index ["invite_token"], name: "index_events_on_invite_token", unique: true
     t.index ["state"], name: "index_events_on_state"
   end
 
@@ -301,6 +302,26 @@ ActiveRecord::Schema.define(version: 20180219153146) do
     t.text "note"
     t.boolean "include_in_mailings", default: false, null: false
     t.boolean "use_gravatar", default: false, null: false
+    t.string "irc_nick"
+    t.string "country"
+    t.string "primary_role"
+    t.string "other_roles"
+    t.boolean "other_role_artist"
+    t.boolean "other_role_community"
+    t.boolean "other_role_development"
+    t.boolean "other_role_promo"
+    t.boolean "other_role_translator"
+    t.boolean "other_role_user"
+    t.boolean "other_role_other"
+    t.string "emergency_contact"
+    t.string "dietary"
+    t.string "allergy"
+    t.boolean "other_dietary_glutenfree"
+    t.boolean "other_dietary_lactosefree"
+    t.boolean "other_dietary_nutfree"
+    t.boolean "other_dietary_vegan"
+    t.boolean "other_dietary_vegetarian"
+    t.boolean "other_dietary_other"
     t.index ["email"], name: "index_people_on_email"
     t.index ["user_id"], name: "index_people_on_user_id"
   end
@@ -397,10 +418,12 @@ ActiveRecord::Schema.define(version: 20180219153146) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+    t.string "username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "versions", force: :cascade do |t|

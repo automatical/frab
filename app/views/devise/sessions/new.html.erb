@@ -1,0 +1,53 @@
+<div class="container">
+
+	<center>
+		<img src="https://www.kde.org/stuff/clipart/klogo-official-lineart_detailed-3000x3000.png"
+	    style="width: 100px; height: 100px">
+	</center>
+
+	<br />
+
+	<div class="row vertical-offset-100">
+	    <div class="span8 offset4">
+	        <div class="panel panel-default">
+	            <div class="panel-heading">
+	                <center><h3 class="panel-title">Please Sign In</h3></center>
+	            </div>
+	            <div class="panel-body">
+	                Please sign in using your <strong>KDE Identity</strong> Login Credentials. If you do not have login credentials, you may register <a href="https://identity.kde.org/">here</a>.
+	                <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+	                <fieldset>
+	                    <div class="form-group panel-form-group">
+	                        <label for="user[username]">Username</label>
+	                        <input class="xlarge form-control" placeholder="Username" name="user[username]" value="" autofocus="true">
+	                    </div>
+	                    <div class="form-group panel-form-group">
+	                        <label for="user[password]">Password</label>
+	                        <input class="xlarge form-control" placeholder="Password" name="user[password]" type="password" value="">
+	                    </div>
+	                    <center>
+	                    	<br />
+	                    	<input class="btn large success login-button" type="submit" value="Login">
+	                    </center>
+	                </fieldset>
+	                <% end %>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+</div>
+
+<!--<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class="form-inputs">
+    <%= f.input :username, required: false, autofocus: true %>
+    <%= f.input :password, required: false %>
+    <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Log in" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>-->

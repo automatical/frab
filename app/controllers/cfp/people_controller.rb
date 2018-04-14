@@ -6,15 +6,15 @@ class Cfp::PeopleController < ApplicationController
 
   def show
     @person = current_user.person
+
+    # if !@conference.in_the_past && !@person.events_in(@conference).empty? && @person.availabilities_in(@conference).count.zero?
+    #   flash[:alert] = t('cfp.specify_availability')
+    # end
+
     return redirect_to action: 'new' unless @person
-
-    if redirect_submitter_to_edit?
-      flash[:alert] = t('users_module.error_invalid_public_name')
-      return redirect_to action: 'edit'
-    end
-
-    if !@conference.in_the_past? && !@person.events_in(@conference).empty? && @person.availabilities_in(@conference).count.zero?
-      flash.now[:alert] = t('cfp.specify_availability')
+    if @person.public_name == current_user.email
+      flash[:alert] = 'Your email address is not a valid public name, please change it.'
+      redirect_to action: 'edit'
     end
 
     respond_to do |format|
@@ -102,6 +102,8 @@ class Cfp::PeopleController < ApplicationController
   def person_params
     params.require(:person).permit(
       :first_name, :last_name, :public_name, :email, :email_public, :gender, :avatar, :abstract, :description, :include_in_mailings,
+      :irc_nick, :country, :primary_role, :other_roles, :other_role_artist, :other_role_community, :other_role_development, :other_role_promo, :other_role_translator, :other_role_user, :other_role_other, :emergency_contact, :dietary, :allergy,
+      :other_dietary_glutenfree, :other_dietary_lactosefree, :other_dietary_nutfree, :other_dietary_vegan, :other_dietary_vegetarian, :other_dietary_other,
       im_accounts_attributes: %i(id im_type im_address _destroy),
       languages_attributes: %i(id code _destroy),
       links_attributes: %i(id title url _destroy),

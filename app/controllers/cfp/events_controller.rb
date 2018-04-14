@@ -2,12 +2,10 @@ class Cfp::EventsController < ApplicationController
   layout 'cfp'
 
   before_action :authenticate_user!, except: :confirm
-  before_action :set_person
-  before_action :load_event, except: %i[index show new create confirm join]
 
   # GET /cfp/events
   def index
-    @events = @person.events
+    @events = current_user.person.events
     @events&.map(&:clean_event_attributes!)
 
     respond_to do |format|

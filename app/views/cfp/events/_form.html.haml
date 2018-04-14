@@ -1,33 +1,23 @@
 = simple_form_for([:cfp, @event], html: {multipart: true}) do |f|
   %fieldset.inputs
     %legend= t("cfp.basic_information")
-    = f.input :title
+    = f.input :title, :hint => "The title of your session/presentation"
     = f.input :subtitle
-    - if @event.present? && @event.speakers.count > 1
-      = f.input :speakers, label: "Speakers" do
-        %p{style: "padding-top: 0.5em;"}
-          %b=@event.speakers.map(&:public_name).join(", ").html_safe
     = f.input :event_type, collection: translated_options(Event::TYPES)
-    = f.association :track, collection: @conference.tracks
-    = f.input :time_slots, as: :select, collection: timeslots, hint: t("cfp.event_time_slots_hint")
-    = f.input :language, as: :language_select, only: @conference.language_codes, include_blank: true
+    / # = f.association :track, collection: @conference.tracks
+    / # = f.input :time_slots, as: :select, collection: timeslots, hint: t("cfp.event_time_slots_hint")
+    / # = f.input :language, as: :language_select, only: @conference.language_codes, include_blank: true
     = image_input_box(f.object.logo)
     = f.input :logo
   - if @conference.classifiers.any?
     = render partial: '/events/event_classifiers', locals: {f: f}
   %fieldset.inputs
     %legend= t("cfp.detailed_description")
-    = f.input :abstract, input_html: {rows: 4}, hint: t("cfp.event_abstract_hint")
-    = f.input :description, hint: t("cfp.event_description_hint")
+    = f.input :abstract, input_html: {rows: 4}, hint: "A brief summary of your presentation"
+    = f.input :description, hint: "Additional information not in the abstract; potential benefits of the topic for the audience"
     = f.input :submission_note, hint: t("cfp.submission_note_hint")
     = dynamic_association :links, t("cfp.links"), f
     = dynamic_association :event_attachments, t("cfp.uploaded_files"), f
+    = f.input :feedback_wanted, :hint => "If you consider yourself as a beginner speaker or would like to receive more feedback and guidance from the Program Comitee to help you prepare your speech"
   .actions
     = f.button :submit, class: 'primary'
-
-- if @event.present? && @event.invite_token.present?
-  %div
-  %h3= 'Token: ' + @event.invite_token
-  %p{class: 'help-block'}
-    = t('cfp.join_submitters_hint')
-    = link_to t('cfp.join_token_link'), cfp_events_join_path(@event.invite_token)

@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :ldap_authenticatable, :registerable,
     :recoverable, :rememberable, :trackable, :validatable,
-    :confirmable, :lockable
+    :lockable
 
   ROLES = %w(submitter crew admin).freeze
   USER_ROLES = %w(submitter crew).freeze
@@ -28,12 +28,28 @@ class User < ApplicationRecord
   scope :confirmed, -> { where(arel_table[:confirmed_at].not_eq(nil)) }
   scope :all_admins, -> { where(role: 'admin') }
 
+  before_validation :get_ldap_email
+  def get_ldap_email
+    self.email = Devise::LDAP::Adapter.get_ldap_param(self.username, "mail").first
+  end
+
+  # use ldap uid as primary key
+  #before_validation :get_ldap_id
+  #def get_ldap_id
+  #  self.id = Devise::LDAP::Adapter.get_ldap_param(self.username, "uid").first
+  #end
+
+  # hack for remember_token
+  def authenticatable_token
+    Digest::SHA1.hexdigest(email)[0,29]
+  end
+
   self.per_page = 10
 
   def setup_default_values
     self.role ||= 'submitter'
     self.sign_in_count ||= 0
-    self.person ||= Person.new(email: email, public_name: email)
+    self.person ||= Person.new(email: email, public_name: username)
   end
 
   def newer_than?(user)
